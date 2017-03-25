@@ -41,7 +41,7 @@ if __name__ == '__main__':
     import argparse
 
     parser = argparse.ArgumentParser(description='Numerically Controlled Oscillator (accumulator bits: %d, lookup table index bits: %d)' % (ACCUMULATOR_BITS, LOOKUP_TABLE_INDEX_BITS))
-    parser.add_argument('frequency', type=int, nargs='?', default=5000)
+    parser.add_argument('frequency', type=int, nargs='?', default=1000)
     parser.add_argument('seconds', type=float, nargs='?', default=0.01)
     args = parser.parse_args()
 
@@ -49,5 +49,5 @@ if __name__ == '__main__':
     seconds = args.seconds
 
     nco = NCO()
-    for v in nco.run(frequency, seconds):
-        print v
+    for s in nco.run(frequency, seconds):
+        print s
