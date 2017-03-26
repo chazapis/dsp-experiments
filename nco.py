@@ -77,9 +77,9 @@ if __name__ == '__main__':
     frequency = args.frequency
     seconds = args.seconds
 
-    nco = NCO()
-    for s in nco.run(frequency, seconds):
-        print s
+    # nco = NCO()
+    # for s in nco.run(frequency, seconds):
+    #     print s
 
     nco = QuadratureNCO()
     for i, q in nco.run(frequency, seconds):

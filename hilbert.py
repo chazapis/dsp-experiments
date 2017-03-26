@@ -25,7 +25,8 @@ class Hilbert(object):
             self.buffer.insert(0, s)
             convolution = sum([self.buffer[i] * self.impulse[i] for i in range(self.length)])
 
-            yield self.buffer[self.half_length], convolution
+            # yield self.buffer[self.half_length], convolution
+            yield convolution, self.buffer[self.half_length]
             self.buffer.pop()
 
 if __name__ == '__main__':
