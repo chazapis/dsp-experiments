@@ -37,6 +37,35 @@ class NCO(object):
 
             yield self.lookup_table[self.accumulator >> self.accumulator_shift]
 
+class QuadratureNCO(NCO):
+    def __init__(self,
+                 sampling_rate=SAMPLING_RATE,
+                 accumulator_bits=ACCUMULATOR_BITS,
+                 lookup_table_index_bits=LOOKUP_TABLE_INDEX_BITS):
+        super(QuadratureNCO, self).__init__(sampling_rate,
+                                            accumulator_bits,
+                                            lookup_table_index_bits)
+
+        self.iaccumulator = 0
+        self.qaccumulator = 0
+
+    def run(self, frequency, seconds):
+        self.qaccumulator = self.iaccumulator + (3 * (self.accumulator_size >> 2)) 
+        self.qaccumulator %= self.accumulator_size # overflow
+
+        phase_per_sample = int(self.accumulator_size * frequency * self.sample_time)
+        while seconds >= 0:
+            seconds -= self.sample_time
+
+            self.iaccumulator += phase_per_sample
+            self.iaccumulator %= self.accumulator_size # overflow
+
+            self.qaccumulator += phase_per_sample
+            self.qaccumulator %= self.accumulator_size # overflow
+
+            yield self.lookup_table[self.iaccumulator >> self.accumulator_shift], \
+                  self.lookup_table[self.qaccumulator >> self.accumulator_shift]
+
 if __name__ == '__main__':
     import argparse
 
@@ -51,3 +80,7 @@ if __name__ == '__main__':
     nco = NCO()
     for s in nco.run(frequency, seconds):
         print s
+
+    nco = QuadratureNCO()
+    for i, q in nco.run(frequency, seconds):
+        print i, q
